@@ -1,0 +1,31 @@
+
+avrdude: AVR device initialized and ready to accept instructions
+
+Reading | ################################################## | 100% 0.02s
+
+avrdude: Device signature = 0x1e9502
+avrdude: NOTE: FLASH memory has been specified, an erase cycle will be performed
+         To disable this feature, specify the -D option.
+avrdude: erasing chip
+avrdude: reading input file "/home/ajith/microhope/ASM/sine-wave.hex"
+avrdude: input file /home/ajith/microhope/ASM/sine-wave.hex auto detected as Intel Hex
+avrdude: writing flash (244 bytes):
+
+Writing | ################################################## | 100% 0.16s
+
+avrdude: 244 bytes of flash written
+avrdude: verifying flash memory against /home/ajith/microhope/ASM/sine-wave.hex:
+avrdude: load data flash data from input file /home/ajith/microhope/ASM/sine-wave.hex:
+avrdude: input file /home/ajith/microhope/ASM/sine-wave.hex auto detected as Intel Hex
+avrdude: input file /home/ajith/microhope/ASM/sine-wave.hex contains 244 bytes
+avrdude: reading on-chip flash data:
+
+Reading | ################################################## | 100% 0.14s
+
+avrdude: verifying ...
+avrdude: 244 bytes of flash verified
+
+avrdude: safemode: Fuses OK
+
+avrdude done.  Thank you.
+
