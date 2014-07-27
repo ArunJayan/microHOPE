@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 #  MicroHOPE IDE program, a wxpython text widget with File I/O, Compile and Upload , undo and redo , deivice selection 
 #  Author  : Arun Jayan
+#  email id: arunjayan32@gmail.com , arun.jayan.j@ieee.org
 #  Licence : GPL version 3
 #  version : microHOPE 4.0.1
 """
@@ -56,10 +57,49 @@ class microhope(wx.Frame):
 		file_menu.Append(10,"&New\tCtrl+N","Create a new Document")
 		file_menu.AppendSeparator()
 		file_menu.Append(11,"&Open\tCtrl+O","Open a file")
+		examples = wx.Menu()
+		examples.Append(0,"None",kind = wx.ITEM_RADIO)
+		examples.Append(400,"blink.c",'Blinks a LED on PB0',kind = wx.ITEM_RADIO)
+		examples.Append(401,"adc.c",'Reads ADC channel 0 and diplays the result on the LCD',kind = wx.ITEM_RADIO)
+		examples.Append(405,'adc-loop.c','Reads ADC channel 0 and diplays the result on the LCD in loop',kind = wx.ITEM_RADIO)
+		examples.Append(406,"adc-v2.c",'ADC -version 2',kind = wx.ITEM_RADIO)
+		examples.Append(407,"adc-v3.c",'ADC -version 3',kind = wx.ITEM_RADIO)
+		examples.Append(402,"copy.c",'Copies a PORTA and display it on PORTB',kind = wx.ITEM_RADIO)
+		examples.Append(403,"copy2.c",'Copy 2',kind = wx.ITEM_RADIO)
+		examples.Append(404,'copy3.c','Copy 3',kind = wx.ITEM_RADIO)
+		examples.Append(409,"echo.c","echo.c" , kind = wx.ITEM_RADIO)
+		examples.Append(410,"echo-v2.c","echo-v2.c", kind = wx.ITEM_RADIO)
+		examples.Append(413,"pwm-tc0.c","PWM-tc0 version 1",kind = wx.ITEM_RADIO)
+		examples.Append(411,"h-bridge.c","H-Bridge Controlling motor",kind = wx.ITEM_RADIO)
+		examples.Append(414,"pwm-tc0-v2.c","PWM tc0 version 2",kind = wx.ITEM_RADIO)
+		examples.Append(415,"cro.c","To make microHOPE as small CRO",kind = wx.ITEM_RADIO)
+		examples.Append(416,"cro2.c","To make microHOPE as small CRO (version 2)" , kind = wx.ITEM_RADIO)
+		examples.Append(408,'hello.c','Print message in LCD',kind = wx.ITEM_RADIO)
+		examples.Append(412,"hello-blink.c","Blinking messages in LCD",kind = wx.ITEM_RADIO)
+		file_menu.AppendMenu(444,"Examples",examples)
 		file_menu.Append(12,"&Save\tCtrl+S","Save the current file")
 		file_menu.Append(13,"&SaveAs\tShift+Ctrl+S","Save the current file with a different name")
 		file_menu.AppendSeparator()
+		file_menu.Append(999,"&Init()\tCtrl+I","Initialize microhope working directory")
 		file_menu.Append(14,"&Exit\tCtrl+Q","Quit the programme")
+		self.Bind(wx.EVT_MENU,self.open_echoc,id = 409)
+		self.Bind(wx.EVT_MENU,self.open_hbridgec , id = 411)
+		self.Bind(wx.EVT_MENU,self.open_pwmtc0v1 , id = 413)
+		self.Bind(wx.EVT_MENU,self.open_pwmtc0v2 , id = 414)
+		self.Bind(wx.EVT_MENU,self.open_cro,id = 415)
+		self.Bind(wx.EVT_MENU,self.open_cro2 , id = 416)
+		self.Bind(wx.EVT_MENU,self.open_echo2c,id = 410)
+		self.Bind(wx.EVT_MENU,self.open_adcv2,id = 406)
+		self.Bind(wx.EVT_MENU,self.open_copyc,id = 402)
+		self.Bind(wx.EVT_MENU,self.open_copy2c,id = 403)
+		self.Bind(wx.EVT_MENU,self.open_copy3c,id = 404)
+		self.Bind(wx.EVT_MENU,self.open_adcv3,id = 407)
+		self.Bind(wx.EVT_MENU,self.init,id = 999)
+		self.Bind(wx.EVT_MENU,self.open_blinkc,id = 400)
+		self.Bind(wx.EVT_MENU,self.open_helloc,id = 408)
+		self.Bind(wx.EVT_MENU,self.open_helloblink , id = 412)
+		self.Bind(wx.EVT_MENU,self.open_adc,id = 401)
+		self.Bind(wx.EVT_MENU,self.open_adcloop,id = 405)
 		self.Bind(wx.EVT_MENU,self.Newfile,id=10)
 		self.Bind(wx.EVT_MENU,self.open_file,id=11)
 		self.Bind(wx.EVT_MENU,self.save_file,id=12)
@@ -368,9 +408,17 @@ class microhope(wx.Frame):
 		dlg = wx.MessageDialog(self,msg,'uHOPE :: Status',wx.OK|wx.ICON_INFORMATION)
 		dlg.ShowModal()
 		dlg.Destroy()	
+	def show_err(self,msg):
+		dlg = wx.MessageDialog(self,msg,'uHOPE :: Status',wx.CANCEL|wx.ICON_ERROR)
+		dlg.ShowModal()
+		dlg.Destroy()
+	def warning(self,msg):
+		dlg = wx.MessageDialog(self,msg,'uHOPE :: Status',wx.CANCEL|wx.ICON_WARNING)
+		dlg.ShowModal()
+		dlg.Destroy()
 	def mhcompile(self,event):
 		if self.fname == '':
-			self.show('Filename not selected .')
+			self.warning('Filename not selected .')
 			return 
 		self.save_file(event)
 		self.fd = self.dname+"/"+self.fname
@@ -380,7 +428,7 @@ class microhope(wx.Frame):
 		self.result = commands.getstatusoutput(command)
 		
 		if self.result[0] != 0:
-			self.show('Compilation Error :\n'+self.result[1])
+			self.show_err('Compilation Error :\n'+self.result[1])
 			self.SetTitle("uHOPE :: File --> "+self.dname+"/"+self.fname+"\t\tDevice -->"+self.mhdevice)
 			return
 		
@@ -392,7 +440,7 @@ class microhope(wx.Frame):
 		self.SetTitle("uHOPE :: File --> "+self.dname+"/"+self.fname+"\t\tDevice -->"+self.mhdevice)
 	def mhupload(self,event):
 		if self.mhdevice == '':
-			self.show('Device not selected\nPlease select a device')
+			self.warning('Device not selected\nPlease select a device')
 			self.devce = []
 			self.command = "ls /dev/ttyUSB*"
 			self.result = commands.getstatusoutput(self.command)
@@ -418,11 +466,11 @@ class microhope(wx.Frame):
 		command= 'avrdude -b 19200 -P %s -pm32 -c stk500v1 -U flash:w:%s.hex'%(self.mhdevice, self.fname_witout_extn)
 		result = commands.getstatusoutput(command)
 		if result[0] != 0:
-			self.show('Upload Error: Try pressing microHOPE Reset button just before Uploading')
+			self.warning('Upload Error:\n'+result[1]+'\nTry pressing microHOPE Reset button just before Uploading')
 			self.SetTitle("uHOPE :: File --> "+self.dname+"/"+self.fname+"\t\tDevice -->"+self.mhdevice)
 			return
 		else:
-			self.show('Upload Completed')
+			self.show('Upload Completed\n'+result[1])
 			self.SetTitle("uHOPE :: File --> "+self.dname+"/"+self.fname+"\t\tDevice -->"+self.mhdevice)
 	def mhhelp(self,event):
 		dlg = wx.MessageDialog(self,"Steps:\n1.Write a program on editor / Open a programe C or Assembler files\n2.Compile it by cliking on compile\n3.You can view the objdump file(*.lst) by opening it in the editoring\n4.Connect microHOPE and wait a minute\n5.Click on Device->Detect Board to detect your board\n6.If microHOPE is not found , repeat or reconnect microHOPE\n7.Upload the hex file to microHOPE (Build->Upload)\n8.If upload fails check microHOPE and upload again\n\nNote: Make sure that microhope folder from /etc/skel/ is copied to your home folder .\nIt contains example programes , mh-libs etc.","microHOPE-Help",wx.OK|wx.ICON_INFORMATION)
@@ -516,6 +564,7 @@ class microhope(wx.Frame):
 			devc = result[1].split('\n')
 		command = "ls /dev/ttyACM*"	
 		result = commands.getstatusoutput(command)
+		
 		if result[0] == 0:
 			devc = result[1].split('\n')
 		if devc == []:
@@ -532,8 +581,206 @@ class microhope(wx.Frame):
 			else :
 				self.SetTitle("uHOPE :: File --> "+self.dname+"/"+self.fname+"\t\tDevice -->"+self.mhdevice)
 			self.show("Device is found at "+ devc[0])
+	def open_blinkc(self,event):
+		self.filename = 'blink.c'
+		self.dirname = 'microhope'
+		file_ = open(os.path.join(self.dirname,self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False
+	def open_helloc(self,event):
+		self.filename = 'hello.c'
+		self.dirname = 'microhope'
+		file_ = open(os.path.join(self.dirname,self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False
+	def open_adc(self,event):
+		self.filename = 'adc.c'
+		self.dirname = 'microhope'
+		file_ = open(os.path.join(self.dirname,self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False
+	def open_echoc(self,event):
+		self.filename = 'echo.c'
+		self.dirname = 'microhope'
+		file_ = open(os.path.join(self.dirname , self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False
+	def open_echo2c(self,event):
+		self.filename = 'echo-v2.c'
+		self.dirname  = 'microhope'
+		file_ = open(os.path.join(self.dirname,self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False
+	def open_adcloop(self,event):
+		self.filename = 'adc-loop.c'
+		self.dirname = 'microhope'
+		file_ = open(os.path.join(self.dirname,self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False
+	def open_adcv2(self,event):
+		self.filename = 'adc-v2.c'
+		self.dirname = 'microhope'
+		file_ = open(os.path.join(self.dirname,self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False
+	def open_adcv3(self,event):
+		self.filename = "adc-v3.c"
+		self.dirname = "microhope"
+		file_ = open(os.path.join(self.dirname,self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False
+	def open_copyc(self,event):
+		self.filename = "copy.c"
+		self.dirname = "microhope"
+		file_ = open(os.path.join(self.dirname,self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False
+	def open_copy2c(self,event):
+		self.filename = "copy2.c"
+		self.dirname = "microhope"
+		file_ = open(os.path.join(self.dirname,self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False
+	def open_copy3c(self,event):
+		self.filename = "copy3.c"
+		self.dirname = "microhope"
+		file_ = open(os.path.join(self.dirname,self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False
+	def open_hbridgec(self,event):
+		self.filename = "h-bridge.c"
+		self.dirname = 'microhope'
+		file_ = open(os.path.join(self.dirname,self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False
+	def open_helloblink(self,event):
+		self.filename = "hello-blink.c"
+		self.dirname = 'microhope'
+		file_ = open(os.path.join(self.dirname,self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False	
+	def open_pwmtc0v1(self,event):
+		self.filename = "pwm-tc0.c"
+		self.dirname = 'microhope'
+		file_ = open(os.path.join(self.dirname,self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False	
+	def open_pwmtc0v2(self,event):
+		self.filename = "pwm-tc0-v2.c"
+		self.dirname = 'microhope'
+		file_ = open(os.path.join(self.dirname,self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False
+	def open_cro(self,event):
+		self.filename = "cro.c"
+		self.dirname = 'microhope'
+		file_ = open(os.path.join(self.dirname,self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False
+	def open_cro2(self,event):
+		self.filename = "cro2.c"
+		self.dirname = 'microhope'
+		file_ = open(os.path.join(self.dirname,self.filename),'r')
+		self.text.SetValue(file_.read())
+		file_.close()
+		self.SetTitle("uHOPE :: File --> "+self.dirname+"/"+self.filename+"\t\tDevice -->"+self.mhdevice)
+		self.fname = self.filename
+		self.dname = self.dirname
+		self.isnew = False
+		self.modify = False
+## to create micrphope working directory 
+	def init(self,event):
+		dlg = wx.MessageDialog(None,"Create microHope environment\nDo you want to create your own microHope environment?\n\nIf you reply \"Yes\", a subdirectory named microHope will be created in your home directory, and a set of files will be copied into it.\n\nIf any previous installation existed, its contents will be overwriten.",'uHOPE init()',wx.YES_NO | wx.YES_DEFAULT |  wx.ICON_QUESTION)
+		chk = dlg.ShowModal()
+		if chk == wx.ID_YES:
+			dlg.Destroy()
+			os.system("mkdir -p ~/microhope && cp -Rd /etc/skel/microhope/* ~/microhope/")
+			self.show("creating microhope environment")
+		elif chk == wx.ID_CANCEL:
+			dlg.Destroy()
+		else:
+			dlg.Destroy()
 			
-		
 def main():
 	app = wx.App()
 	microhope(None,-1,'uHOPE','size')
@@ -541,7 +788,3 @@ def main():
 	
 if __name__ == '__main__':
 	main()
-		
-			
-		
-        
