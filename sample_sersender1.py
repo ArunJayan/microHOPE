@@ -28,7 +28,7 @@ class MhFrame(wx.Frame):
 					 self.Bind(wx.EVT_BUTTON, self.OnButtonClick, button)
 					 
 					 self.label = wx.StaticText(self.mhpanel,-1,label=u'',pos = (5,50),style = wx.EXPAND)
-					 self.label.SetBackgroundColour(wx.BLUE)
+					 self.label.SetBackgroundColour("yellow")
 					 self.label.SetForegroundColour(wx.WHITE)
 					 
 					 self.entry.SetFocus()
