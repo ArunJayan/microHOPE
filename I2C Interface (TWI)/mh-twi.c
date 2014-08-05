@@ -45,3 +45,4 @@ void I2C_stop()
 {
 	TWCR = (1<<TWINT)|(1<<TWSTO)|(1<<TWEN);
 }
+//
