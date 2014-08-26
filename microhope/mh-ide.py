@@ -113,7 +113,7 @@ class microhope(wx.Frame):
 		editmenu.Append(17,"&Cut\tCtrl+X","Cut the selection")
 		editmenu.Append(18,"&Copy\tCtrl+C","Copy the selection")
 		editmenu.Append(19,"&Paste\tCtrl+P","Paste the clipboard")
-		editmenu.Append(20,"&Delete\tDelete","Deleted the selected text")
+		editmenu.Append(20,"&Delete","Deleted the selected text")
 		editmenu.AppendSeparator()
 		editmenu.Append(21,"&Select All\tCtrl+A","select the entire document")
 		self.Bind(wx.EVT_MENU,self.Undo,id=15)
@@ -121,8 +121,8 @@ class microhope(wx.Frame):
 		self.Bind(wx.EVT_MENU,self.Cut,id=17)
 		self.Bind(wx.EVT_MENU,self.Copy,id=18)
 		self.Bind(wx.EVT_MENU,self.Paste,id=19)
-		self.Bind(wx.EVT_MENU,self.Delete,id=20)
 		self.Bind(wx.EVT_MENU,self.Select_All,id=21)
+		self.Bind(wx.EVT_MENU,self.Delete,id = 20)
 		#view-menu #
 		viewmenu = wx.Menu()
 		self.statusbaritem = wx.MenuItem(viewmenu, 22,"&Statusbar","Show or hide the statusbar in the current window")
@@ -189,8 +189,8 @@ class microhope(wx.Frame):
 		#---------------------------------#
 		about = wx.Menu()
 		about.Append(45,"&Help\tShift+Ctrl+H","")
-		about.Append(46,"&About\tShift+Ctrl+Z","")
-		about.Append(47,"&Author\tShift+Ctrl+A","")
+		about.Append(46,"&About","")
+		about.Append(47,"&Author","")
 		self.Bind(wx.EVT_MENU,self.mhhelp,id =45)
 		self.Bind(wx.EVT_MENU,self.About,id = 46)
 		self.Bind(wx.EVT_MENU,self.Author,id= 47)
@@ -367,9 +367,6 @@ class microhope(wx.Frame):
 		self.text.Copy()
 	def Paste(self,event):
 		self.text.Paste()
-	def Delete(self,event):
-		frm , to = self.text.GetSelection()
-		self.text.Remove(frm,to)
 	def Select_All(self,event):
 		self.text.SelectAll()
 	def fontsize10(self,event):
@@ -488,7 +485,7 @@ class microhope(wx.Frame):
 		msg = 'uHOPE :: File -> %s & Device -> %s'%(f,d)
 		self.show(msg)
 	def About(self,event):
-		abt = wx.MessageDialog(self,"microHOPE is a developement Board using Atmega32\nCreated by :Dr.Ajith Kumar B P\n\t\t\t\t IUAC,New Delhi","About uHOPE",wx.OK|wx.ICON_INFORMATION)
+		abt = wx.MessageDialog(self,"microHOPE is a developement Board using Atmega32\nCreated by :Dr.Ajith Kumar B P\n\t\t\t\t IUAC,New Delhi\n\t\t\t\t http://www.expeyes.in/microhope","About uHOPE",wx.OK|wx.ICON_INFORMATION)
 		abt.ShowModal()
 		abt.Destroy()
 	def pulseRTS(self,dev):
@@ -581,6 +578,9 @@ class microhope(wx.Frame):
 			else :
 				self.SetTitle("uHOPE :: File --> "+self.dname+"/"+self.fname+"\t\tDevice -->"+self.mhdevice)
 			self.show("Device is found at "+ devc[0])
+	def Delete(self,event):
+		frm , to = self.text.GetSelection()
+		self.text.Remove(frm,to)
 	def open_blinkc(self,event):
 		self.filename = 'blink.c'
 		self.dirname = 'microhope'
