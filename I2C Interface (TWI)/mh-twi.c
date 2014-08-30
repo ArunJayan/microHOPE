@@ -45,4 +45,12 @@ void I2C_stop()
 {
 	TWCR = (1<<TWINT)|(1<<TWSTO)|(1<<TWEN);
 }
-//
+void I2C_Write(uint8_t data)
+{
+	TWDR = data; 	
+	/*
+	 * It writes data byte to TWDR which is shifted to SDA line .
+	 * */
+	TWCR = (1<<TWINT)|(1<<TWEN);
+	while  ((TWCR & (1<<TWINT)) == 0);
+}
