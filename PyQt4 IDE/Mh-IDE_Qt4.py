@@ -20,4 +20,4 @@ class MH_MainWindow(QG.QMainWindow):
 		####------Upper ToolBar -----------####
 		new = QG.QAction(QG.QIcon("pixmaps/document-new.png"),"New",self)
 		new.Shortcut("Ctrl+N")	
-		new.setStatusTip("Creates a 
+		new.setStatusTip("Creates a new file ")
