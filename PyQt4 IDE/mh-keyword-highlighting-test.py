@@ -148,4 +148,63 @@ class MyHighlighter( QSyntaxHighlighter ):
       self.setCurrentBlockState( 0 )
 
 class HighlightingRule():
+  def __init__( self, pattern, format ):
+    self.pattern = pattern
+    self.format = format
+
+
+class MhWindow(QMainWindow):
+
+    def __init__(self):
+
+        QMainWindow.__init__(self)
+
+        ##************************************************************************************************************##
+        #Basic UI Design
+        #first we set the default size of IDE to 800x600
+        self.resize(800,600)
+        #then we set the icon using QIcon() by loading it from /usr/share/pixmaps/mh-logo.png
+        self.setWindowIcon(QIcon("/usr/share/pixmaps/mh-logo.png"))
+        #after setting the icon we set the title of the window
+        self.setWindowTitle("microHOPE IDE ")
+        ##************************************************************************************************************##
+        #TextEdit Widget
+        self._text_ = QTextEdit(self)
+        self._text_.setTabStopWidth(12)
+        font = QFont()
+        font.setFamily( "Courier" )
+        font.setFixedPitch( True )
+        font.setPointSize( 10 )
+        self._text_.setFont( font )
+        highlighter = MyHighlighter( self._text_, "Classic" )
+        self.setCentralWidget(self._text_)  # this will makes _text_ widget as central widget
+        #*************************************************************************************************************##
+        menubar = self.menuBar()
+        file = menubar.addMenu("File")
+        openAction = QAction(QIcon("icons/open.png"),"Open file",self)
+        openAction.setStatusTip("Open existing document")
+        openAction.setShortcut("Ctrl+O")
+        openAction.triggered.connect(self.Open)
+        file.addAction(openAction)
+    def Open(self):
+        filename = QFileDialog.getOpenFileName(self, 'Open File')
+        f = open(filename, 'r')
+        filedata = f.read()
+        self._text_.setText(filedata)
+        f.close()
+    def closeEvent(self, QCloseEvent):
+        # here we modify the closeEvent Handler and add a Yes or No option
+        # becoz if don't modify this closeEvent Handler it will stop without giving the message box
+        # closeEvent() is already defined here actually we modified for this message box.
+        _closedialog = QMessageBox.question(self,"Quit","Are you sure ??",QMessageBox.Yes,QMessageBox.No)
+        if _closedialog == QMessageBox.Yes:
+            QCloseEvent.accept()
+        else :
+            QCloseEvent.ignore()
+if __name__ == "__main__":
+
+    app = QApplication(sys.argv)
+    _mh = MhWindow()
+    _mh.show()
+    sys.exit(app.exec_())
 
