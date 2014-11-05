@@ -32,3 +32,16 @@ class MyHighlighter( QSyntaxHighlighter ):
       singleQuotedString = QTextCharFormat()
 
       self.highlightingRules = []
+      # keyword
+      brush = QBrush( Qt.darkBlue, Qt.SolidPattern )
+      keyword.setForeground( brush )
+      keyword.setFontWeight( QFont.Bold )
+      keywords = QStringList( [ "int","float","double","char"
+								,"unsigned","long","uint8_t",
+								"uint16_t","uint32_t","uint64_t","if","else","for","switch","while","do",
+								"return","void"] )
+	
+      for word in keywords:
+        pattern = QRegExp("\\b" + word + "\\b")
+        rule = HighlightingRule( pattern, keyword )
+        self.highlightingRules.append( rule )
