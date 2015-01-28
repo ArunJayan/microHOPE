@@ -18,6 +18,7 @@ class Mh_ui(QtGui.QMainWindow):
 		self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget_2)
 		self.verticalLayout.setMargin(0)
 		self.label = QtGui.QLabel(self.verticalLayoutWidget_2)
+		self.label.setStyleSheet("QLabel { background-color : green; color : blue; }")
 		self.verticalLayout.addWidget(self.label)
 		self.verticalLayoutWidget_3 = QtGui.QWidget(self.centralwidget)
 		self.verticalLayoutWidget_3.setGeometry(QtCore.QRect(0, 490, 1021, 221))
